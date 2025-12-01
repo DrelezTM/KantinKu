@@ -13,7 +13,7 @@
                 <a href="/#about" class="text-white hover:text-[#8FABD4] transition-colors font-medium">About</a>
                 <a href="/#menu" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Menu</a>
                 <a href="/#feedback" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Feedback</a>
-                <a href="/#bookmark" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Bookmarks</a>
+                <a href="{{ route('bookmarks') }}" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Bookmarks</a>
             </div>
 
             @guest

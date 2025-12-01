@@ -7,6 +7,7 @@ use App\Livewire\Admin\ProfilePage;
 use App\Livewire\Admin\UserPage;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\BookmarksPage;
 use App\Livewire\DashboardPage;
 use App\Livewire\IndexPage;
 use App\Livewire\ProductsPage;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', IndexPage::class)->name('index');
 Route::get('/products', ProductsPage::class)->name('products');
+Route::get('/bookmarks', BookmarksPage::class)->name('bookmarks');
 
 Route::get('/register', Register::class)->name('register');
 Route::get('/login', Login::class)->name('login');

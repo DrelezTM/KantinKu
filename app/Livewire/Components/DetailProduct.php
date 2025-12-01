@@ -5,6 +5,7 @@ namespace App\Livewire\Components;
 use App\Models\Bookmark;
 use App\Models\Like;
 use App\Models\Product;
+use App\Models\Visit;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -46,6 +47,13 @@ class DetailProduct extends Component
 
         $this->likedCount = Like::where('product_id', $productId)
             ->count();
+
+        $ip = request()->ip();
+        Visit::create([
+            'product_id' => $this->product->id,
+            'ip_address' => $ip,
+            'created_at' => now()
+        ]);
     }
 
     public function closeDetail()

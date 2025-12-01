@@ -119,12 +119,6 @@
                                 >
                                     <i class="fas fa-info-circle mr-1"></i> Detail
                                 </button>
-                                <button 
-                                    wire:click="addToCart({{ $product->id }})"
-                                    class="flex-1 px-3 py-2 bg-[#8FABD4] text-white text-sm rounded-lg hover:bg-[#7a9bc7] transition-colors font-medium"
-                                >
-                                    <i class="fas fa-cart-plus mr-1"></i> Pesan
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -182,16 +176,10 @@
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a 
-                        href="/menu" 
+                        href="{{ route('products') }}" 
                         class="px-6 py-3 bg-[#0C2B4E] text-white rounded-lg hover:bg-[#163e6d] transition-colors font-medium shadow-lg"
                     >
                         <i class="fas fa-utensils mr-2"></i> Jelajahi Menu
-                    </a>
-                    <a 
-                        href="/products" 
-                        class="px-6 py-3 border border-[#0C2B4E] text-[#0C2B4E] rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                    >
-                        <i class="fas fa-list mr-2"></i> Lihat Semua Produk
                     </a>
                 </div>
             </div>
