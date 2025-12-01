@@ -55,6 +55,10 @@
                                     text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Price
                                 </th>
+                                <th class="px-6 py-4 text-left text-sm font-medium 
+                                    text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Visitor
+                                </th>
                                     <th class="px-6 py-4 text-left text-sm font-medium 
                                     text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Actions
@@ -91,6 +95,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 
                                     dark:text-white">
                                     {{ 'Rp'.number_format($product->price, 0, ',', '.') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 
+                                    dark:text-gray-400 text-center">
+                                    {{ $product->visits_count }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button class="text-blue-600 hover:text-blue-900 

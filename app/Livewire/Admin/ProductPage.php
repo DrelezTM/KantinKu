@@ -33,7 +33,7 @@ class ProductPage extends Component
     public $image;
 
     public function mount() {
-        $this->products = Product::with('category')->get();
+        $this->products = Product::with('category')->withCount('visits')->get();
         $this->categories = Category::all();
     }
 

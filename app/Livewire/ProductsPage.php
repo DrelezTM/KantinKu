@@ -2,29 +2,51 @@
 
 namespace App\Livewire;
 
-use App\Models\Category;
-use App\Models\Product;
 use Livewire\Component;
+use Livewire\WithPagination;
+use App\Models\Product;
+use App\Models\Category;
 
 class ProductsPage extends Component
 {
-    public $category_id = '';
+    use WithPagination;
+
+    public $categories;
+    public $selectedCategory = null;
+    public $search = '';
+
+    public function mount()
+    {
+        $this->categories = Category::all();
+    }
+
+    public function selectCategory($categoryId)
+    {
+        $this->selectedCategory = $categoryId;
+        $this->resetPage();
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function render()
     {
-        // Jika ada kategori yang dipilih, filter by kategori
-        if ($this->category_id) {
-            $products = Product::where('category_id', $this->category_id)->get();
-        } else {
-            // Jika tidak, tampilkan semua produk
-            $products = Product::all();
+        $query = Product::query()->with('category');
+
+        if ($this->selectedCategory) {
+            $query->where('category_id', $this->selectedCategory);
         }
 
-        $categories = Category::all();
+        if ($this->search) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        }
+
+        $products = $query->paginate(12);
 
         return view('livewire.products', [
             'products' => $products,
-            'categories' => $categories,
         ]);
     }
 }

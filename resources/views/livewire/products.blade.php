@@ -21,15 +21,17 @@
                                 <!-- Search -->
                                 <label class="block text-sm font-semibold mb-2 text-gray-800">Cari Menu</label>
                                 <div class="relative mb-6">
-                                    <input type="text" placeholder="Cari produk..." class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0C2B4E] focus:outline-none">
+                                    <input type="text" placeholder="Cari produk..." class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0C2B4E] focus:outline-none" wire:model.live.debounce.500ms="search">
                                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
                                 </div>
                                 <!-- Kategori -->
                                 <h3 class="font-bold text-lg mb-3 text-[#0C2B4E]">Kategori</h3>
                                 <div class="space-y-2">
-                                    <button class="w-full text-left px-4 py-2 rounded-lg bg-[#0C2B4E] text-white font-semibold shadow hover:bg-[#163e6d] transition"> Semua </button>
+                                    <button wire:click="selectCategory(null)" class="w-full text-left px-4 py-2 rounded-lg {{ is_null($selectedCategory) ? 'bg-[#0C2B4E] text-white' : 'hover:bg-gray-100 text-gray-700' }} font-semibold shadow transition">Semua</button>
                                     @foreach ($categories as $category)
-                                        <button class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition font-medium text-gray-700"> {{ $category->name }} </button>
+                                        <button wire:click="selectCategory({{ $category->id }})" class="w-full text-left px-4 py-2 rounded-lg {{ $selectedCategory === $category->id ? 'bg-[#0C2B4E] text-white' : 'hover:bg-gray-100 text-gray-700' }} transition font-medium">
+                                            {{ $category->name }}
+                                        </button>
                                     @endforeach
                                 </div>
                             </div>
