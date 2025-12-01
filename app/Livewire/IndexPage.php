@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Index extends Component
+class IndexPage extends Component
 {
     public function render()
     {

@@ -81,7 +81,6 @@
 
         @livewireScripts
         <script>
-            // Sidebar Toggle for Mobile
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             if (window.innerWidth < 768) {
@@ -89,7 +88,6 @@
             }
         }
 
-        // Sidebar Collapse for Desktop
         function toggleSidebarCollapse() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');
@@ -100,7 +98,6 @@
             collapseIcon.classList.toggle('rotate-180');
         }
 
-        // Dropdown Toggle
         function toggleDropdown(id) {
             const dropdown = document.getElementById(id + '-dropdown');
             const arrow = document.getElementById(id + '-arrow');
@@ -109,9 +106,12 @@
             arrow.classList.toggle('rotate-180');
         }
 
-        // Modal Functions
         function openAddProductModal() {
             document.getElementById('add-product-modal').classList.add('active');
+        }
+
+        function openAddCategoryModal() {
+            document.getElementById('add-category-modal').classList.add('active');
         }
 
         function openEditProductModal() {
@@ -122,7 +122,6 @@
             document.getElementById(modalId).classList.remove('active');
         }
 
-        // User Dropdown Toggle
         document.addEventListener('DOMContentLoaded', function() {
             const userButton = document.getElementById('user-menu-button');
             const userDropdown = document.getElementById('user-dropdown');
@@ -133,14 +132,12 @@
                 });
             }
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function(event) {
                 if (userButton && userDropdown && !userButton.contains(event.target) && !userDropdown.contains(event.target)) {
                     userDropdown.classList.add('hidden');
                 }
             });
 
-            // Close sidebar on mobile when clicking outside
             const sidebar = document.getElementById('sidebar');
             const btnOpen = document.getElementById('btnOpen');
             
@@ -155,7 +152,6 @@
                 }
             });
 
-            // Close modal when clicking outside
             document.addEventListener('click', function(event) {
                 if (event.target.classList.contains('modal')) {
                     event.target.classList.remove('active');
@@ -163,7 +159,6 @@
             });
         });
 
-        // Dark/Light Mode Toggle
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggle = document.getElementById('theme-toggle');
             
@@ -179,7 +174,6 @@
                 });
             }
 
-            // Check for saved theme preference
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
             } else {

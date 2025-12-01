@@ -5,7 +5,7 @@ namespace App\Livewire\Admin;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
-class User extends Component
+class UserPage extends Component
 {
     public $users;
     public function mount() {

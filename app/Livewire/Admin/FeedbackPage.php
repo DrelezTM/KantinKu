@@ -4,7 +4,7 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 
-class Feedback extends Component
+class FeedbackPage extends Component
 {
     public $feedbacks, $feedbackCount;
     public function mount() {

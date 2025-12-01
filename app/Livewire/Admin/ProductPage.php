@@ -3,16 +3,17 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
 
-class Product extends Component
+class ProductPage extends Component
 {
     use WithFileUploads;
     
-    public $products, $categories;
+    public $products, $categories, $productId;
     #[Validate('required|string|max:255')]
     public $name = '';
 
@@ -22,6 +23,9 @@ class Product extends Component
     #[Validate('required|numeric|min:0')]
     public $price;
 
+    #[Validate('required|string|unique:products,slug')]
+    public $slug;
+
     #[Validate('nullable|string|max:1000')]
     public $description;
 
@@ -29,7 +33,7 @@ class Product extends Component
     public $image;
 
     public function mount() {
-        $this->products = \App\Models\Product::with('category')->get();
+        $this->products = Product::with('category')->get();
         $this->categories = Category::all();
     }
 
@@ -40,8 +44,9 @@ class Product extends Component
             $imagePath = $this->image->store('products', 'public');
         }
 
-        \App\Models\Product::create([
+        Product::create([
             'name' => $this->name,
+            'slug' => strtolower(str_replace(' ', '-', $this->slug)),
             'category_id' => $this->category,
             'description' => $this->description,
             'price' => $this->price,
@@ -49,7 +54,26 @@ class Product extends Component
         ]);
 
         session()->flash('message', 'Product added successfully.');
-        return $this->redirect('/dashboard/products');
+        $this->products = Product::with('category')->get();
+    }
+
+    public function edit($id)
+    {
+        $product = Product::with('category')->find($id);
+
+        if (!$product) {
+            session()->flash('error', 'Product not found.');
+            return;
+        }
+
+        $this->productId = $product->id;
+        $this->name = $product->name;
+        $this->slug = strtolower(str_replace(' ', '-', $product->slug));
+        $this->category = $product->category_id;
+        $this->price = $product->price;
+        $this->description = $product->description;
+
+        $this->dispatch('openEditProductModal'); 
     }
 
     public function update()
@@ -60,6 +84,7 @@ class Product extends Component
         if ($product) {
             $product->name = $this->name;
             $product->category_id = $this->category;
+            $product->slug = strtolower(str_replace(' ', '-', $this->slug));
             $product->price = $this->price;
             $product->description = $this->description;
             $product->image_path = $imagePath;
@@ -77,13 +102,13 @@ class Product extends Component
     {
         if (Auth::user()->role !== 'admin') return session()->flash('error', 'You do not have permission to perform this action.');
 
-        $product = \App\Models\Product::find($id);
+        $product = Product::find($id);
 
         if ($product) {
             $product->delete();
             session()->flash('message', 'Product deleted successfully.');
 
-            $this->products = \App\Models\Product::with('category')->get();
+            $this->products = Product::with('category')->get();
         } else {
             session()->flash('error', 'Product not found.');
         }

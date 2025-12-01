@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
-class Profile extends Component
+class ProfilePage extends Component
 {
     public $user, $initials;
 

@@ -77,7 +77,7 @@
             
             if (menuBtn && mobileMenu && menuIconOpen && menuIconClose) {
                 menuBtn.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Mencegah event bubbling
+                    e.stopPropagation();
                     
                     const isHidden = mobileMenu.classList.contains('hidden');
                     
@@ -92,7 +92,6 @@
                     }
                 });
                 
-                // Tutup menu mobile saat mengklik di luar
                 document.addEventListener('click', function(event) {
                     const isClickInsideNav = event.target.closest('nav');
                     if (!isClickInsideNav && !mobileMenu.classList.contains('hidden')) {
@@ -102,7 +101,6 @@
                     }
                 });
                 
-                // Mencegah menu tertutup saat mengklik menu itu sendiri
                 mobileMenu.addEventListener('click', function(e) {
                     e.stopPropagation();
                 });

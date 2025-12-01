@@ -64,7 +64,6 @@
     </main>
 
     <script>
-        // Data passed from the Livewire component
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 
         'September', 'October', 'November', 'December'];
 
@@ -72,7 +71,6 @@
         const userData = @json($users);
         const productData = @json($products);
 
-        // Visitor Chart
         const visitorCtx = document.getElementById('visitorChart').getContext('2d');
         new Chart(visitorCtx, {
             type: 'line',

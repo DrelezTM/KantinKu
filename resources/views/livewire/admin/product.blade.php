@@ -3,7 +3,6 @@
 
     <livewire:components.sidebar />
 
-    <!-- Main Content -->
     <main id="main-content" class="pt-24 pl-64 
     smooth-transition min-h-screen">
         <div class="p-6">
@@ -21,6 +20,17 @@
                     Add Product
                 </button>
             </div>
+
+            @if (session()->has('message'))
+            <div id="alert-box" 
+                @class([
+                    'mb-4 px-4 py-3 rounded-lg text-white',
+                    'bg-red-600' => session('type') === 'error',
+                    'bg-green-600' => session('type') !== 'error'
+                ])>
+                {{ session('message') }}
+            </div>
+            @endif
 
             <div class="bg-white dark:bg-gray-800 rounded-xl 
             shadow-sm border border-gray-100 dark:border-gray-700 
@@ -64,6 +74,9 @@
                                             <div class="text-sm font-medium text-gray-900 dark:text-white">
                                                 {{ $product->name }}
                                             </div>
+                                            <div class="whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $product->slug }}
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -82,7 +95,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button class="text-blue-600 hover:text-blue-900 
                                         dark:text-blue-400 dark:hover:text-blue-300 mr-4 smooth-transition" 
-                                        onclick="openEditProductModal()">
+                                        onclick="openEditProductModal()" wire:click="edit({{ $product->id }})">
                                         Edit
                                     </button>
                                     <button onclick="if(!confirm('Are you sure you want to delete this product?')) 
@@ -101,7 +114,6 @@
         </div>
     </main>
 
-    <!-- Add Product Modal -->
     <div id="add-product-modal" class="modal">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full 
             max-w-md mx-4 p-6 smooth-transition">
@@ -125,6 +137,20 @@
                         rounded-lg bg-white dark:bg-gray-700 text-gray-900 
                         dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
                         focus:border-transparent" placeholder="Enter product name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium 
+                        text-gray-700 dark:text-gray-300 mb-2">
+                        Product Slug
+                    </label>
+                    <input type="text" wire:model="slug" 
+                    class="w-full px-4 py-3 border border-gray-300 
+                        dark:border-gray-600 rounded-lg bg-white 
+                        dark:bg-gray-700 text-gray-900 dark:text-white 
+                        smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" 
+                        id="product-slug-add"
+                        placeholder="Enter product slug">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 
@@ -188,7 +214,7 @@
                         border-gray-300 dark:border-gray-600 text-gray-700 
                         dark:text-gray-300 rounded-lg hover:bg-gray-50 
                         dark:hover:bg-gray-700 smooth-transition" 
-                        onclick="closeModal('product-modal')">
+                        onclick="closeModal('add-product-modal')">
                         Cancel
                     </button>
                     <button type="submit" class="px-6 py-3 bg-blue-600 
@@ -200,7 +226,7 @@
         </div>
     </div>
 
-    <div id="edit-product-modal" class="modal" style="display:none;">
+    <div id="edit-product-modal" class="modal">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full 
             max-w-md mx-4 p-6 smooth-transition">
             <div class="flex justify-between items-center mb-6">
@@ -227,6 +253,19 @@
                         smooth-transition focus:ring-2 focus:ring-blue-500 
                         focus:border-transparent" 
                         placeholder="Enter product name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium 
+                        text-gray-700 dark:text-gray-300 mb-2">
+                        Product Slug
+                    </label>
+                    <input type="text" wire:model="slug" 
+                    class="w-full px-4 py-3 border border-gray-300 
+                        dark:border-gray-600 rounded-lg bg-white 
+                        dark:bg-gray-700 text-gray-900 dark:text-white 
+                        smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" 
+                        placeholder="Enter product slug">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 
@@ -270,8 +309,7 @@
                         smooth-transition focus:ring-2 focus:ring-blue-500 
                         focus:border-transparent" 
                     rows="3" 
-                    placeholder="Enter product description">
-                </textarea>
+                    placeholder="Enter product description"></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 
@@ -301,4 +339,18 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.getElementById('product-slug-add').addEventListener('change', function () {
+            this.value = this.value.toLowerCase().trim().replace(/\s+/g, '-');
+        });
+
+        window.addEventListener('openAddProductModal', event => {
+            document.getElementById('add-product-modal').classList.add('active');
+        });
+
+        window.addEventListener('openEditProductModal', event => {
+            document.getElementById('edit-product-modal').classList.add('active');
+        });
+    </script>
 </div>

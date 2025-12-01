@@ -282,7 +282,6 @@
     @endif
 
     <script>
-    // Fungsi copy link ke clipboard
     function copyShareLink() {
         const text = 'Lihat menu menarik di KantinKu!';
         if (navigator.clipboard && window.isSecureContext) {
@@ -294,7 +293,6 @@
         }
     }
 
-    // Prevent horizontal scroll
     document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflowX = 'hidden';
     });

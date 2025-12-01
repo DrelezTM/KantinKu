@@ -6,7 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Livewire\Component;
 
-class Products extends Component
+class ProductsPage extends Component
 {
     public $category_id = '';
 

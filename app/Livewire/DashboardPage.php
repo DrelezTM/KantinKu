@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Visit;
 use Livewire\Component;
 
-class Dashboard extends Component
+class DashboardPage extends Component
 {
     public $totalVisitors, $totalUsers, $totalProducts;
     public $visitorsPerMonth = [];
