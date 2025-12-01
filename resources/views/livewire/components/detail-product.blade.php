@@ -104,39 +104,14 @@
                             @endauth
 
                             <!-- Share -->
-                            <div class="relative flex-shrink-0" x-data="{ open: false }">
+                            <div class="relative flex-shrink-0">
                                 <button 
-                                    @click="open = !open"
-                                    class="flex items-center space-x-1 text-gray-600 hover:text-green-500 transition duration-200 cursor-pointer">
+                                    class="flex items-center space-x-1 text-gray-600 hover:text-green-500 transition duration-200 cursor-pointer" onclick="shareContent()">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                                     </svg>
                                     <span class="text-sm">Bagikan</span>
                                 </button>
-
-                                <!-- Share Options Dropdown -->
-                                <div x-show="open" 
-                                     x-cloak
-                                     @click.outside="open = false"
-                                     x-transition:enter="transition ease-out duration-200"
-                                     x-transition:enter-start="opacity-0 transform scale-95"
-                                     x-transition:enter-end="opacity-100 transform scale-100"
-                                     x-transition:leave="transition ease-in duration-150"
-                                     x-transition:leave-start="opacity-100 transform scale-100"
-                                     x-transition:leave-end="opacity-0 transform scale-95"
-                                     class="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-3 min-w-[200px] z-50">
-                                    <div class="space-y-2">
-                                        <button @click="open = false; copyShareLink()" 
-                                                class="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition duration-200 text-left">
-                                            <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                                </svg>
-                                            </div>
-                                            <span class="text-gray-700 text-sm">Salin Link</span>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -282,14 +257,17 @@
     @endif
 
     <script>
-    function copyShareLink() {
-        const text = 'Lihat menu menarik di KantinKu!';
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(function() {
-                alert('Link berhasil disalin ke clipboard!');
-            });
-        } else {
-            alert('Silakan salin manual: ' + text);
+    async function shareContent() {
+        const shareData = {
+            title: 'KantinKu',
+            text: 'Lihat menu menarik di KantinKu!',
+            url: window.location.origin + '/products'
+        };
+
+        try {
+            await navigator.share(shareData);
+        } catch (err) {
+            throw err;
         }
     }
 

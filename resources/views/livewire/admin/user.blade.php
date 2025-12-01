@@ -13,7 +13,26 @@
                 <h2 class="text-2xl font-bold dark:text-white">
                     Users Management
                 </h2>
+
+                <button class="bg-blue-600 hover:bg-blue-700 
+                text-white px-4 py-2 rounded-lg flex items-center 
+                gap-2 smooth-transition w-full sm:w-auto justify-center" 
+                onclick="openAddUserModal()">
+                    <i class="fa-solid fa-plus"></i>
+                    Add User
+                </button>
             </div>
+
+            @if (session()->has('message'))
+            <div id="alert-box" 
+                @class([
+                    'mb-4 px-4 py-3 rounded-lg text-white',
+                    'bg-red-600' => session('type') === 'error',
+                    'bg-green-600' => session('type') !== 'error'
+                ])>
+                {{ session('message') }}
+            </div>
+            @endif
 
             <div class="bg-white dark:bg-gray-800 
                 rounded-xl shadow-sm border border-gray-100 
@@ -108,4 +127,95 @@
             </div>
         </div>
     </main>
+
+    <div id="add-user-modal" class="modal">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full 
+            max-w-md mx-4 p-6 smooth-transition">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold dark:text-white">
+                    Add User
+                </h3>
+                <button class="text-gray-500 hover:text-gray-700 
+                    dark:text-gray-400 
+                    dark:hover:text-gray-200 smooth-transition" 
+                    onclick="closeModal('add-user-modal')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <form class="space-y-4" wire:submit.prevent="save">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 
+                        dark:text-gray-300 mb-2">NIM</label>
+                    <input type="text" wire:model="nim" class="w-full 
+                        px-4 py-3 border border-gray-300 dark:border-gray-600 
+                        rounded-lg bg-white dark:bg-gray-700 text-gray-900 
+                        dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" placeholder="Enter nim">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 
+                        dark:text-gray-300 mb-2">Name</label>
+                    <input type="text" wire:model="name" class="w-full 
+                        px-4 py-3 border border-gray-300 dark:border-gray-600 
+                        rounded-lg bg-white dark:bg-gray-700 text-gray-900 
+                        dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" placeholder="Enter name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 
+                        dark:text-gray-300 mb-2">Email</label>
+                    <input type="email" wire:model="email" class="w-full 
+                        px-4 py-3 border border-gray-300 dark:border-gray-600 
+                        rounded-lg bg-white dark:bg-gray-700 text-gray-900 
+                        dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" placeholder="Enter email">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 
+                        dark:text-gray-300 mb-2">Password</label>
+                    <input type="password" wire:model="password" class="w-full 
+                        px-4 py-3 border border-gray-300 dark:border-gray-600 
+                        rounded-lg bg-white dark:bg-gray-700 text-gray-900 
+                        dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" placeholder="Enter password">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 
+                        dark:text-gray-300 mb-2">Phone Number</label>
+                    <input type="number" wire:model="phone_number" class="w-full 
+                        px-4 py-3 border border-gray-300 dark:border-gray-600 
+                        rounded-lg bg-white dark:bg-gray-700 text-gray-900 
+                        dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent" placeholder="Enter phone number">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 
+                        dark:text-gray-300 mb-2">
+                        Role
+                    </label>
+                    <select wire:model="role" class="w-full px-4 py-3 border 
+                        border-gray-300 dark:border-gray-600 rounded-lg 
+                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                        smooth-transition focus:ring-2 focus:ring-blue-500 
+                        focus:border-transparent">
+                        <option value="admin">Admin</option>
+                        <option value="buyer">Buyer/Mahasiswa</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" class="px-6 py-3 border 
+                        border-gray-300 dark:border-gray-600 text-gray-700 
+                        dark:text-gray-300 rounded-lg hover:bg-gray-50 
+                        dark:hover:bg-gray-700 smooth-transition" 
+                        onclick="closeModal('add-user-modal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-blue-600 
+                        hover:bg-blue-700 text-white rounded-lg smooth-transition">
+                        Save User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

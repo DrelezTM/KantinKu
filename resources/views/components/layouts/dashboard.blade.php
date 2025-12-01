@@ -114,6 +114,10 @@
             document.getElementById('add-category-modal').classList.add('active');
         }
 
+        function openAddUserModal() {
+            document.getElementById('add-user-modal').classList.add('active');
+        }
+
         function openEditProductModal() {
             document.getElementById('edit-product-modal').classList.add('active');
         }
