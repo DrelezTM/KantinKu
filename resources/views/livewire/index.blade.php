@@ -25,6 +25,7 @@
             <livewire:components.feedback
                 title="Ajukan Aduan" 
             />
+            
         </div>
     </main>
     

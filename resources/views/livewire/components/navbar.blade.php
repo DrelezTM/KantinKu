@@ -13,6 +13,7 @@
                 <a href="/#about" class="text-white hover:text-[#8FABD4] transition-colors font-medium">About</a>
                 <a href="/#menu" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Menu</a>
                 <a href="/#feedback" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Feedback</a>
+                <a href="/#bookmark" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Bookmarks</a>
             </div>
 
             @guest
@@ -50,6 +51,7 @@
             <a href="/#about" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium">About</a>
             <a href="/#menu" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium">Menu</a>
             <a href="/#feedback" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Feedback</a>
+            <a href="/#bookmark" class="text-white hover:text-[#8FABD4] transition-colors font-medium">Bookmarks</a>
             <div class="pt-2 border-t border-gray-200">
                 @guest
                 <a href="{{ route('login') }}" class="block px-4 py-3 text-center bg-[#0C2B4E] text-white rounded-lg font-semibold hover:bg-[#1a3a5f] transition-colors">
