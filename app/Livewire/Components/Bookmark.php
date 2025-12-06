@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Components;
 
-use Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class Bookmark extends Component
 {

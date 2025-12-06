@@ -10,6 +10,38 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/* Enable dark mode variant */
+@variant dark (&:where(.dark, .dark *));
+
+/* DARK MODE GLOBAL STYLES */
+.dark {
+    color-scheme: dark;
+    background-color: #111827; /* gray-900 */
+    color: #f3f4f6; /* gray-100 */
+}
+
+.dark body {
+    background-color: #111827;
+    color: #f3f4f6;
+}
+
+/* Transisi smooth */
+* {
+    transition: background-color 0.3s ease, 
+                border-color 0.3s ease, 
+                color 0.3s ease;
+}
+
+/* Custom styles */
+:root {
+    --color-primary: #3b82f6;
+}
+
+.dark {
+    --color-primary: #60a5fa;
+}
+
+/* Animations */
 @keyframes float3d {
     0%   { transform: perspective(900px) translateY(0px) rotateX(4deg) rotateY(-4deg); }
     50%  { transform: perspective(900px) translateY(-18px) rotateX(7deg) rotateY(7deg); }

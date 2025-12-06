@@ -70,12 +70,6 @@
                         <p class="text-gray-600 dark:text-gray-300 mb-4">
                             {{ $feedback->message }}
                         </p>
-                        <div class="flex space-x-2">
-                            <a href="mailto:{{ $feedback->email }}" class="px-4 py-2 bg-blue-600 
-                            hover:bg-blue-700 text-white text-sm rounded-lg smooth-transition">
-                                Tindak Lanjut
-                            </a>
-                        </div>
                     </div>
                     @endforeach
                 </div>
