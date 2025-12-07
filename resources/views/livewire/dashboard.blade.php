@@ -1,157 +1,181 @@
-<div>
-    <livewire:components.header />
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <livewire:components.sidebar />
+        <title>{{ $title ?? 'KantinKu' }}</title>
 
-    <!-- Main Content -->
-    <main id="main-content" class="pt-24 pl-64 smooth-transition min-h-screen">
-        <div class="p-6">
-            <!-- Dashboard Page -->
-            <div id="dashboard-page" class="page active">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl 
-                    shadow-sm border border-gray-100 dark:border-gray-700 
-                    smooth-transition card-hover">
-                        <div class="flex flex-col space-y-4">
-                            <h3 class="text-gray-500 dark:text-gray-400 
-                            font-semibold text-lg">Total Visitor</h3>
-                            <p class="text-4xl font-bold text-blue-600 
-                            dark:text-blue-400">{{ $totalVisitors }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl 
-                    shadow-sm border border-gray-100 dark:border-gray-700 
-                    smooth-transition card-hover">
-                        <div class="flex flex-col space-y-4">
-                            <h3 class="text-gray-500 dark:text-gray-400 
-                            font-semibold text-lg">Total User</h3>
-                            <p class="text-4xl font-bold text-blue-600 
-                            dark:text-blue-400">{{ $totalUsers }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl 
-                    shadow-sm border border-gray-100 dark:border-gray-700 
-                    smooth-transition card-hover">
-                        <div class="flex flex-col space-y-4">
-                            <h3 class="text-gray-500 dark:text-gray-400 
-                            font-semibold text-lg">Total Product</h3>
-                            <p class="text-4xl font-bold text-blue-600 
-                            dark:text-blue-400">{{ $totalProducts }}</p>
-                        </div>
-                    </div>
-                </div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+            }
+        </script>
+        @vite(['resources/css/app.css'])
+        @livewireStyles
+        <style>
+            .dark {
+                color-scheme: dark;
+            }
+            .page {
+                display: none;
+            }
+            .page.active {
+                display: block;
+            }
+            .nav-item.active {
+                background-color: rgb(219 234 254);
+                color: rgb(37 99 235);
+            }
+            .dark .nav-item.active {
+                background-color: rgb(30 58 138 / 0.2);
+                color: rgb(96 165 250);
+            }
+            .smooth-transition {
+                transition: all 0.3s ease-in-out;
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+            }
+            .modal.active {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .sidebar-collapsed {
+                width: 80px !important;
+            }
+            .sidebar-collapsed .sidebar-text {
+                display: none !important;
+            }
+            .sidebar-collapsed .sidebar-section {
+                display: none !important;
+            }
+            .main-expanded {
+                margin-left: 80px !important;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300" style="font-family: 'Inter';">
+        {{ $slot }}
 
-                <!-- Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
-                    <!-- Visitor Statistics -->
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl 
-                    shadow-sm border border-gray-100 dark:border-gray-700 smooth-transition">
-                        <div class="flex flex-col space-y-6">
-                            <h3 class="text-2xl font-bold dark:text-white">
-                                All Statistics
-                            </h3>
-                            <div class="w-full h-80">
-                                <canvas id="visitorChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        @livewireScripts
+        <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('translate-x-[-240px]');
+            }
+        }
 
-            <!-- Other pages would follow the same pattern with proper spacing -->
-        </div>
-    </main>
+        function toggleSidebarCollapse() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const collapseIcon = document.getElementById('sidebar-collapse-icon');
+            
+            sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.classList.toggle('main-expanded');
+            collapseIcon.classList.toggle('rotate-180');
+        }
 
-    <script>
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 
-        'September', 'October', 'November', 'December'];
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id + '-dropdown');
+            const arrow = document.getElementById(id + '-arrow');
+            
+            dropdown.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
 
-        const visitorData = @json($visitors);
-        const userData = @json($users);
-        const productData = @json($products);
+        function openAddCategoryModal() {
+            document.getElementById('add-category-modal').classList.add('active');
+        }
 
-        const visitorCtx = document.getElementById('visitorChart').getContext('2d');
-        new Chart(visitorCtx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [
-                    {
-                        label: 'Visitors',
-                        data: visitorData,
-                        borderColor: '#2563eb',
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#2563eb',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    },
-                    {
-                        label: 'Users',
-                        data: userData,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#10b981',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    },
-                    {
-                        label: 'Products',
-                        data: productData,
-                        borderColor: '#fbbf24',
-                        backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#fbbf24',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        },
-                        ticks: {
-                            stepSize: 200,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        },
-                        ticks: {
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
+        function openAddUserModal() {
+            document.getElementById('add-user-modal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userButton && userDropdown) {
+                userButton.addEventListener('click', function() {
+                    userDropdown.classList.toggle('hidden');
+                });
+            }
+
+            document.addEventListener('click', function(event) {
+                if (userButton && userDropdown && !userButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.add('hidden');
                 }
+            });
+
+            const sidebar = document.getElementById('sidebar');
+            const btnOpen = document.getElementById('btnOpen');
+            
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth < 768 && 
+                    sidebar && 
+                    btnOpen &&
+                    !sidebar.contains(event.target) && 
+                    !btnOpen.contains(event.target) &&
+                    !sidebar.classList.contains('translate-x-[-240px]')) {
+                    sidebar.classList.add('translate-x-[-240px]');
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            }
+
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
             }
         });
-    </script>
-</div>
+        </script>
+    </body>
+</html>

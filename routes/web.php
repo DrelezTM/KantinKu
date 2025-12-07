@@ -1,6 +1,8 @@
 <?php
 
+use App\Livewire\Admin\AddProductPage;
 use App\Livewire\Admin\CategoryPage;
+use App\Livewire\Admin\EditProductPage;
 use App\Livewire\Admin\FeedbackPage;
 use App\Livewire\Admin\ProductPage;
 use App\Livewire\Admin\ProfilePage;
@@ -30,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/dashboard', DashboardPage::class)->name('dashboard');
         Route::get('/dashboard/products', ProductPage::class)->name('dashboard.products');
+        Route::get('/dashboard/products/create', AddProductPage::class)->name('dashboard.products.create');
+        Route::get('/dashboard/products/edit/{id}', EditProductPage::class)->name('dashboard.products.edit');
         Route::get('/dashboard/categories', CategoryPage::class)->name('dashboard.categories');
         Route::get('/dashboard/profile', ProfilePage::class)->name('dashboard.profile');
         Route::get('/dashboard/users', UserPage::class)->name('dashboard.users');

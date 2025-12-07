@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Bookmark;
 use App\Models\Category;
+use App\Models\Like;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -10,92 +12,30 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
 
 class ProductPage extends Component
-{
-    use WithFileUploads;
-    
+{   
     public $products, $categories, $productId;
-    #[Validate('required|string|max:255')]
-    public $name = '';
+    public $modalVisible = false;
+    public $modalProduct, $likedCount, $bookmarkedCount;
 
-    #[Validate('required|exists:categories,id')]
-    public $category;
-
-    #[Validate('required|numeric|min:0')]
-    public $price;
-
-    #[Validate('required|string|unique:products,slug')]
-    public $slug;
-
-    #[Validate('nullable|string|max:1000')]
-    public $description;
-
-    #[Validate('nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240')]
-    public $image;
+    public function showProduct($id)
+    {
+        $this->modalProduct = Product::with('category')->withCount('visits')->withCount('likes')->withCount('bookmarks')->withAvg('ratings', 'rating')->findOrFail($id);
+        $this->likedCount = Like::where('product_id', $id)
+            ->count();
+        $this->bookmarkedCount = Bookmark::where('product_id', $id)
+            ->count();
+        $this->modalVisible = true;
+    }
 
     public function mount() {
         $this->products = Product::with('category')->withCount('visits')->get();
         $this->categories = Category::all();
     }
 
-    public function save()
+    public function closeModal()
     {
-        $imagePath = '';
-        if ($this->image) {
-            $imagePath = $this->image->store('products', 'public');
-        }
-
-        Product::create([
-            'name' => $this->name,
-            'slug' => strtolower(str_replace(' ', '-', $this->slug)),
-            'category_id' => $this->category,
-            'description' => $this->description,
-            'price' => $this->price,
-            'image_path' => $imagePath
-        ]);
-
-        session()->flash('message', 'Product added successfully.');
-        $this->products = Product::with('category')->get();
-    }
-
-    public function edit($id)
-    {
-        $product = Product::with('category')->find($id);
-
-        if (!$product) {
-            session()->flash('error', 'Product not found.');
-            return;
-        }
-
-        $this->productId = $product->id;
-        $this->name = $product->name;
-        $this->slug = strtolower(str_replace(' ', '-', $product->slug));
-        $this->category = $product->category_id;
-        $this->price = $product->price;
-        $this->description = $product->description;
-
-        $this->dispatch('openEditProductModal'); 
-    }
-
-    public function update()
-    {
-        $imagePath = $this->image ? $this->image->store('products', 'public') : $this->image;
-
-        $product = Product::find($this->productId);
-        if ($product) {
-            $product->name = $this->name;
-            $product->category_id = $this->category;
-            $product->slug = strtolower(str_replace(' ', '-', $this->slug));
-            $product->price = $this->price;
-            $product->description = $this->description;
-            $product->image_path = $imagePath;
-
-            $product->save();
-
-            session()->flash('message', 'Product updated successfully.');
-            $this->resetFields();
-            $this->dispatchBrowserEvent('closeEditProductModal');
-            $this->products = Product::with('category')->get();
-        }
+        $this->modalVisible = false;
+        $this->mount();
     }
 
     public function delete($id)
@@ -108,7 +48,7 @@ class ProductPage extends Component
             $product->delete();
             session()->flash('message', 'Product deleted successfully.');
 
-            $this->products = Product::with('category')->get();
+            $this->products = Product::with('category')->withCount('visits')->get();
         } else {
             session()->flash('error', 'Product not found.');
         }

@@ -12,13 +12,12 @@
                 <h2 class="text-2xl font-bold dark:text-white">
                     Products Management
                 </h2>
-                <button class="bg-blue-600 hover:bg-blue-700 
+                <a href="{{ route('dashboard.products.create') }}" class="bg-blue-600 hover:bg-blue-700 
                 text-white px-4 py-2 rounded-lg flex items-center 
-                gap-2 smooth-transition w-full sm:w-auto justify-center" 
-                onclick="openAddProductModal()">
+                gap-2 smooth-transition w-full sm:w-auto justify-center">
                     <i class="fa-solid fa-plus"></i>
                     Add Product
-                </button>
+                </a>
             </div>
 
             @if (session()->has('message'))
@@ -59,7 +58,7 @@
                                     text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Visitor
                                 </th>
-                                    <th class="px-6 py-4 text-left text-sm font-medium 
+                                    <th class="px-6 py-4 text-center text-sm font-medium 
                                     text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Actions
                                 </th>
@@ -90,7 +89,9 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 
                                     dark:text-gray-400">
-                                    {{ $product->category->name }}
+                                    <span class="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                        {{ $product->category->name }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 
                                     dark:text-white">
@@ -98,20 +99,22 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 
                                     dark:text-gray-400 text-center">
-                                    {{ $product->visits_count }}
+                                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                                        {{ $product->visits_count }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-blue-600 hover:text-blue-900 
-                                        dark:text-blue-400 dark:hover:text-blue-300 mr-4 smooth-transition" 
-                                        onclick="openEditProductModal()" wire:click="edit({{ $product->id }})">
-                                        Edit
-                                    </button>
-                                    <button onclick="if(!confirm('Are you sure you want to delete this product?')) 
-                                        return;" wire:click="delete({{ $product->id }})" 
-                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 
-                                        smooth-transition">
-                                        Delete
-                                    </button>
+                                    <div class="flex space-x-3">
+                                        <button wire:click="showProduct({{ $product->id }})" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 smooth-transition">
+                                            <i class="fas fa-eye mr-1"></i> Show
+                                        </button>
+                                        <a href="{{ route('dashboard.products.edit', $product->id) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 smooth-transition">
+                                                <i class="fas fa-edit mr-1"></i> Edit
+                                        </a>
+                                        <button onclick="if(!confirm('Are you sure you want to delete this product?')) return;" wire:click="delete({{ $product->id }})" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 smooth-transition delete-product-btn">
+                                            <i class="fas fa-trash mr-1"></i> Delete
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -122,243 +125,115 @@
         </div>
     </main>
 
-    <div id="add-product-modal" class="modal">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full 
-            max-w-md mx-4 p-6 smooth-transition">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold dark:text-white">
-                    Add Product
-                </h3>
-                <button class="text-gray-500 hover:text-gray-700 
-                    dark:text-gray-400 
-                    dark:hover:text-gray-200 smooth-transition" 
-                    onclick="closeModal('add-product-modal')">
-                    <i class="fa-solid fa-times"></i>
-                </button>
+    @if ($modalVisible)
+    <div id="productDetailModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg">
+
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-start">
+
+                    <div class="flex items-start space-x-4">
+                        <img src="{{ asset('/storage/' . $modalProduct->image_path) }}"
+                            class="h-14 w-14 rounded-xl object-cover">
+                        <div>
+                            <h3 class="text-xl font-bold dark:text-white">
+                                {{ $modalProduct->name }}
+                            </h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">
+                                {{ $modalProduct->slug }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <button wire:click="closeModal"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+
+                </div>
             </div>
-            <form class="space-y-4" wire:submit.prevent="save">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">Product Name</label>
-                    <input type="text" wire:model="name" class="w-full 
-                        px-4 py-3 border border-gray-300 dark:border-gray-600 
-                        rounded-lg bg-white dark:bg-gray-700 text-gray-900 
-                        dark:text-white smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" placeholder="Enter product name">
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="mb-6">
+                    <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Description</h4>
+                    <p class="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+                        {{ $modalProduct->description }}
+                    </p>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium 
-                        text-gray-700 dark:text-gray-300 mb-2">
-                        Product Slug
-                    </label>
-                    <input type="text" wire:model="slug" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                        id="product-slug-add"
-                        placeholder="Enter product slug">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Category
-                    </label>
-                    <select wire:model="category" class="w-full px-4 py-3 border 
-                        border-gray-300 dark:border-gray-600 rounded-lg 
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent">
-                        @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
+
+                <div class="grid grid-cols-2 gap-8 items-center">
+                    
                     <div>
-                        <label class="block text-sm font-medium text-gray-700  
-                            dark:text-gray-300 mb-2">
-                            Price
-                        </label>
-                        <input wire:model="price" type="number" class="w-full 
-                            px-4 py-3 border border-gray-300 dark:border-gray-600 
-                            rounded-lg bg-white dark:bg-gray-700 text-gray-900 
-                            dark:text-white smooth-transition focus:ring-2 
-                            focus:ring-blue-500 focus:border-transparent" 
-                            placeholder="Enter product price">
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Category</h4>
+                        <div class="mt-2 px-3 py-1 rounded-full w-fit bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 flex items-center gap-2">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                            <span>{{ $modalProduct->category->name }}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Price</h4>
+                        <div class="text-xl font-bold dark:text-white">
+                            Rp{{ number_format($modalProduct->price, 0, ',', '.') }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Likes</h4>
+                        <div class="mt-2 px-3 py-1 rounded-full w-fit bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 flex gap-2 items-center">
+                            <svg class="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                </path>
+                            </svg>
+                            {{ $likedCount }}
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Liked</h4>
+                        <div class="mt-2 px-3 py-1 rounded-full w-fit bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 flex gap-2 items-center">
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            {{ number_format($modalProduct->ratings_avg_rating, 1) }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Visitors</h4>
+                        <div class="mt-2 px-3 py-1 rounded-full w-fit bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 flex gap-2 items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            {{ $modalProduct->visits_count }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Bookmarks</h4>
+                        <div class="mt-2 px-3 py-1 rounded-full w-fit bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 flex gap-2 items-center">
+                            <svg class="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                            {{ $bookmarkedCount }}
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Description
-                    </label>
-                    <textarea wire:model="description" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                        rows="3" 
-                        placeholder="Enter product description">
-                    </textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Product Image
-                    </label>
-                    <input type="file" wire:model="image" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                        accept="image/*">
-                </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-6 py-3 border 
-                        border-gray-300 dark:border-gray-600 text-gray-700 
-                        dark:text-gray-300 rounded-lg hover:bg-gray-50 
-                        dark:hover:bg-gray-700 smooth-transition" 
-                        onclick="closeModal('add-product-modal')">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-6 py-3 bg-blue-600 
-                        hover:bg-blue-700 text-white rounded-lg smooth-transition">
-                        Save Product
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="edit-product-modal" class="modal">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full 
-            max-w-md mx-4 p-6 smooth-transition">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold dark:text-white">
-                    Edit Product
-                </h3>
-                <button class="text-gray-500 hover:text-gray-700 
-                    dark:text-gray-400 dark:hover:text-gray-200 
-                    smooth-transition" 
-                    onclick="closeModal('edit-product-modal')">
-                    <i class="fa-solid fa-times"></i>
-                </button>
             </div>
-            <form wire:submit.prevent="update" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium 
-                        text-gray-700 dark:text-gray-300 mb-2">
-                        Product Name
-                    </label>
-                    <input type="text" wire:model="name" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                        placeholder="Enter product name">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium 
-                        text-gray-700 dark:text-gray-300 mb-2">
-                        Product Slug
-                    </label>
-                    <input type="text" wire:model="slug" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                        placeholder="Enter product slug">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Category
-                    </label>
-                    <select wire:model="category" class="w-full px-4 py-3 border 
-                    border-gray-300 dark:border-gray-600 rounded-lg bg-white 
-                    dark:bg-gray-700 text-gray-900 dark:text-white 
-                    smooth-transition focus:ring-2 focus:ring-blue-500 
-                    focus:border-transparent">
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}">
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Price
-                    </label>
-                    <input wire:model="price" type="number" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                    placeholder="Enter product price">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Description
-                    </label>
-                    <textarea wire:model="description" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                    rows="3" 
-                    placeholder="Enter product description"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300 mb-2">
-                        Product Image
-                    </label>
-                    <input type="file" wire:model="image" 
-                    class="w-full px-4 py-3 border border-gray-300 
-                        dark:border-gray-600 rounded-lg bg-white 
-                        dark:bg-gray-700 text-gray-900 dark:text-white 
-                        smooth-transition focus:ring-2 focus:ring-blue-500 
-                        focus:border-transparent" 
-                        accept="image/*">
-                </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-6 py-3 border border-gray-300 
-                        dark:border-gray-600 text-gray-700 dark:text-gray-300 
-                        rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 smooth-transition" 
-                        onclick="closeModal('edit-product-modal')">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-6 py-3 bg-blue-600 
-                        hover:bg-blue-700 text-white rounded-lg smooth-transition">
-                        Save Changes
-                    </button>
-                </div>
-            </form>
+
+            <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                <a href="{{ route('dashboard.products.edit', $modalProduct->id) }}" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+                    <i class="fas fa-edit mr-1"></i> Edit Product
+                </a>
+            </div>
+
         </div>
+
     </div>
-
-    <script>
-        document.getElementById('product-slug-add').addEventListener('change', function () {
-            this.value = this.value.toLowerCase().trim().replace(/\s+/g, '-');
-        });
-
-        window.addEventListener('openAddProductModal', event => {
-            document.getElementById('add-product-modal').classList.add('active');
-        });
-
-        window.addEventListener('openEditProductModal', event => {
-            document.getElementById('edit-product-modal').classList.add('active');
-        });
-    </script>
+    @endif
 </div>
